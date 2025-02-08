@@ -1,0 +1,63 @@
+'''
+import cv2
+from NVLib.VisualRec.FLRH import FaceHandDetector
+
+def test_detector():
+    detector = FaceHandDetector()
+    
+    cap = cv2.VideoCapture(0)
+    if not cap.isOpened():
+        print("Error: Could not access the webcam.")
+        return
+
+    ret, frame = cap.read()
+    cap.release()
+
+    if not ret:
+        print("Error: Could not capture frame.")
+        return
+
+    face_detected = detector.detect_face(frame)
+    left_hand_detected, right_hand_detected = detector.detect_hands(frame)
+
+    print(f"Face Detected: {face_detected}")
+    print(f"Left Hand Detected: {left_hand_detected}")
+    print(f"Right Hand Detected: {right_hand_detected}")
+
+if __name__ == "__main__":
+    test_detector()
+'''
+
+'''
+from NVLib.VisualRec.HandTracker import HandTracker
+import cv2
+
+# Initialize the HandTracker (Non-Headless Mode)
+tracker = HandTracker(headless_mode=False)
+
+# Start detection in non-headless mode (camera window will show)
+tracker.start_detection()
+# Example of getting landmarks from a single frame
+cap = cv2.VideoCapture(0)
+ret, frame = cap.read()
+if ret:
+    # Get the landmarks from the frame
+    landmarks = tracker.get_landmarks(frame)
+    
+    # If landmarks are found, draw them
+    if landmarks:
+        tracker.draw_landmarks(frame, landmarks)
+        cv2.imshow("Landmarks", frame)
+        cv2.waitKey(0)
+cap.release()
+
+# Example of running the tracker in headless mode
+headless_tracker = HandTracker(headless_mode=True)
+
+# Start detection in headless mode (no camera window will show)
+headless_tracker.start_detection()
+
+# Stop the detection and release resources when done
+tracker.stop_detection()
+headless_tracker.stop_detection()
+'''

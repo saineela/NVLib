@@ -1,6 +1,6 @@
 '''
 import cv2
-from NVLib.VisualRec.FLRH import FaceHandDetector
+from NVLib-python.VisualRec.FLRH import FaceHandDetector
 
 def test_detector():
     detector = FaceHandDetector()
@@ -29,7 +29,7 @@ if __name__ == "__main__":
 '''
 
 '''
-from NVLib.VisualRec.HandTracker import HandTracker
+from NVLib-python.VisualRec.HandTracker import HandTracker
 import cv2
 
 # Initialize the HandTracker (Non-Headless Mode)

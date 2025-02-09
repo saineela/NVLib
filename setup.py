@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 setup(
-    name="NYLib",
+    name="NVLib",
     version="0.1.0",
     author="Sai Neela",
     author_email="saiathulithn@gmail.com",

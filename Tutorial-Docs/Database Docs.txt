@@ -7,7 +7,7 @@
 #db = TinyDB('checking')
 #db.create('1', 'one')
 #db.create('2', "two")
-#print(db.read('1'))  # Output: Not good rihanna.
+#print(db.read('1'))
 #db.update('2', 'three')
 #db.delete('assistant')
 #db.reset_db()

@@ -1,9 +1,9 @@
-#from NVLib-python.Database.Mariadb import MariaDB
+#from NVLib.Database.Mariadb import MariaDB
 
 #db = MariaDB(host, user, password, database, port=3306)
 #db.create_or_connect_table("MyTable")
 
-#from NVLib-python.Database.Tinydb import TinyDB
+#from NVLib.Database.Tinydb import TinyDB
 #db = TinyDB('checking')
 #db.create('1', 'one')
 #db.create('2', "two")

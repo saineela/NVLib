@@ -17,6 +17,9 @@ def test_detector():
         print("Error: Could not capture frame.")
         return
 
+    # Mirror the frame before detection
+    frame = cv2.flip(frame, 1)  # Flip the frame horizontally
+    
     face_detected = detector.detect_face(frame)
     left_hand_detected, right_hand_detected = detector.detect_hands(frame)
 
@@ -26,6 +29,7 @@ def test_detector():
 
 if __name__ == "__main__":
     test_detector()
+
 '''
 
 '''

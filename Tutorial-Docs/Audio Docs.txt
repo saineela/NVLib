@@ -1,2 +1,2 @@
-import NVLib.Audio.TextToSpeech as tts
+import NVLib.Components.Audio.TextToSpeech as tts
 tts.say("Hey how are you?")

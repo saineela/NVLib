@@ -9,7 +9,7 @@ setup(
     long_description=open("README.md").read(),
     long_description_content_type="text/markdown",
     url="https://github.com/saineela/NVLib",
-    packages=find_packages(),
+    packages=find_packages(Components),
     license="CC0-1.0",
     install_requires=open("requirements.txt").read().splitlines(),
     classifiers=[

@@ -1,4 +1,4 @@
-#from NVLib.Database.Mariadb import MariaDB
+#from NVLib.Components.Database.Mariadb import MariaDB
 try:
     db = MariaDB(host="localhost", user="casaos", password="casaos", database="casaos", port=3306)
     
@@ -36,7 +36,7 @@ finally:
 
 __________________________________________________________________________________________________________________________
 
-#from NVLib.Database.Tinydb import TinyDB
+#from NVLib.Components.Database.Tinydb import TinyDB
 #db = TinyDB('checking')
 #db.create('1', 'one')
 #db.create('2', "two")

@@ -1,9 +1,10 @@
-import os
-import warnings
 import cv2
 import mediapipe as mp
-import sys
 import logging
+import sys
+import warnings
+import os
+
 logging.getLogger("tensorflow").setLevel(logging.ERROR)
 logging.getLogger("absl").setLevel(logging.ERROR)
 sys.stderr = open(os.devnull, 'w')
@@ -11,7 +12,7 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 warnings.filterwarnings("ignore")
 
 class FaceHandDetector:
-    def __init__(self, face_confidence=0.8, hand_confidence=0.9):
+    def __init__(self, face_confidence=0.9, hand_confidence=0.9):
         self.mp_face_mesh = mp.solutions.face_mesh
         self.mp_hands = mp.solutions.hands
         
@@ -43,9 +44,9 @@ class FaceHandDetector:
             for classification in hand_results.multi_handedness:
                 label = classification.classification[0].label
                 if label == "Left":
-                    right_hand_detected = True
-                if label == "Right":
                     left_hand_detected = True
+                elif label == "Right":
+                    right_hand_detected = True
         
         return left_hand_detected, right_hand_detected
     
@@ -53,15 +54,15 @@ class FaceHandDetector:
         changes = []
         
         if face_detected != self.previous_face_state:
-            changes.append("Face Detected" if face_detected else "Face Not Detected")
+            changes.append(f"Face Detected: {face_detected}")
             self.previous_face_state = face_detected
         
         if left_hand_detected != self.previous_left_hand:
-            changes.append("Left Hand Detected" if left_hand_detected else "Left Hand Not Detected")
+            changes.append(f"Left Hand Detected: {left_hand_detected}")
             self.previous_left_hand = left_hand_detected
         
         if right_hand_detected != self.previous_right_hand:
-            changes.append("Right Hand Detected" if right_hand_detected else "Right Hand Not Detected")
+            changes.append(f"Right Hand Detected: {right_hand_detected}")
             self.previous_right_hand = right_hand_detected
         
         return changes
@@ -77,7 +78,8 @@ class FaceHandDetector:
             if not ret:
                 break
             
-            frame = cv2.flip(frame, 1)  # Mirror the camera
+            # Mirror the camera frame before any processing
+            frame = cv2.flip(frame, 1)  # Flip the frame horizontally
             
             face_detected = self.detect_face(frame)
             left_hand_detected, right_hand_detected = self.detect_hands(frame)

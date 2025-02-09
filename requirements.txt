@@ -1,0 +1,12 @@
+pygame
+asyncio
+edge_tts
+os
+mariadb
+json
+cv2
+mediapipe
+logging
+sys
+warnings
+pyautogui

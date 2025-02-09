@@ -1,0 +1,60 @@
+# Byte-compiled files
+*.pyc
+*.pyo
+*.pyd
+__pycache__/
+*.egg-info/
+
+# Distribution and build directories
+build/
+dist/
+*.egg
+*.egg-info/
+pip-wheel-metadata/
+
+# Virtual environment directories
+env/
+venv/
+.venv/
+
+# System-specific files
+.DS_Store
+Thumbs.db
+*.swp
+
+# IDE and editor files
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Log and debug files
+*.log
+
+# Tests cache
+.tox/
+.nox/
+
+# PyInstaller
+*.spec
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# Package manager files
+__pypackages__/
+
+# Test coverage and reports
+.coverage
+*.cover
+.hypothesis/
+
+# MyPy cache
+.mypy_cache/
+
+# Pyright files
+pyrightconfig.json
+
+# Others
+*.bak
+*.tmp

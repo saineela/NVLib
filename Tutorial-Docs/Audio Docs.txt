@@ -1,0 +1,2 @@
+import NVLib.Audio.TextToSpeech as tts
+tts.say("Beti Kaysayyy ho")

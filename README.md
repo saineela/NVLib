@@ -26,7 +26,7 @@ Follow these steps to install and use NVLib in your VS Code project.
 1. Open your Python script inside the project folder.
 2. Import NVLib using:
    ```python
-   import NVLib.ComponentSectionname.ModuleName
+   from NVLib.Components.{ComponentSectionname}.{ModuleName} import {ModuleClassName}
    ```
 3. Use the functions provided by NVLib.
 

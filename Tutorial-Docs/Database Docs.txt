@@ -1,7 +1,40 @@
 #from NVLib.Database.Mariadb import MariaDB
+try:
+    db = MariaDB(host="localhost", user="casaos", password="casaos", database="casaos", port=3306)
+    
+    # Create or connect to a table
+    db.create_or_connect_table("detections")
+    
+    # Insert some values
+    db.insert_value("detections", "Car", 1)
+    db.insert_value("detections", "Bike", 0)
+    db.insert_value("detections", "Person", 1)
+    
+    # Show all records
+    print("All Recognitions:", db.get_value("detections"))
+    
+    # Update a record by ID and by name
+    db.update_value("detections", 1, 0)  # Update record with id=1
+    db.update_value_by_name("detections", "Bike", 1)  # Update 'Bike'
+    
+    # Show updated records
+    print("Updated Recognitions:", db.get_value("detections"))
+    
+    # Delete records by ID and by name
+    db.delete_value("detections", 2)  # Delete record with id=2
+    db.delete_value_by_name("detections", "Person")  # Delete 'Person'
+    
+    # Show records after deletion
+    print("After Deletions:", db.get_value("detections"))
+    
+    # Reset the table (drop it)
+    db.reset_database("detections")
 
-#db = MariaDB(host, user, password, database, port=3306)
-#db.create_or_connect_table("MyTable")
+finally:
+    # Close the connection to the database
+    db.close_connection()
+
+__________________________________________________________________________________________________________________________
 
 #from NVLib.Database.Tinydb import TinyDB
 #db = TinyDB('checking')

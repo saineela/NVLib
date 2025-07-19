@@ -1,14 +1,9 @@
-# FILE 1: Save this code as autogui.py
-# This is your NEW library file, now using customtkinter.
-
 import customtkinter as ctk
 from tkinter import filedialog
 import json
 from PIL import Image, ImageDraw, ImageTk
 import base64
 import io
-
-# --- Component Wrapper Classes for the Simplified API ---
 
 class BaseWrapper:
     """Base wrapper with common functionality."""

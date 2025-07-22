@@ -4,16 +4,24 @@ import json
 from PIL import Image, ImageDraw, ImageTk
 import base64
 import io
+import os
+import sys
+
+def resource_path(relative_path):
+    try:
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")
+
+    return os.path.join(base_path, relative_path)
 
 class BaseWrapper:
-    """Base wrapper with common functionality."""
     def __init__(self, widget, layout_info):
         self.widget = widget
         self.layout_info = layout_info
         self.is_visible = True
 
     def toggle_visibility(self):
-        """Toggles the visibility of the widget."""
         if self.is_visible:
             self.widget.place_forget()
         else:
@@ -21,28 +29,24 @@ class BaseWrapper:
         self.is_visible = not self.is_visible
 
     def text(self, new_text=None):
-        """Gets or sets the text of the widget."""
         if new_text is None:
             return self.widget.cget("text")
         else:
             self.widget.configure(text=new_text)
 
     def text_color(self, new_color=None):
-        """Gets or sets the text color of the widget."""
         if new_color is None:
             return self.widget.cget("text_color")
         else:
             self.widget.configure(text_color=new_color)
 
     def background_color(self, new_color=None):
-        """Gets or sets the background color (fg_color) of the widget."""
         if new_color is None:
             return self.widget.cget("fg_color")
         else:
             self.widget.configure(fg_color=new_color)
             
     def bold(self, is_bold=None):
-        """Gets or sets the bold property of the widget's font."""
         current_font = self.widget.cget("font")
         if is_bold is None:
             return current_font.cget("weight") == "bold"
@@ -52,22 +56,17 @@ class BaseWrapper:
 
 
 class ButtonWrapper(BaseWrapper):
-    """Wrapper for Buttons."""
     def on_click(self, command):
-        """Assigns a function to be called when the button is clicked."""
         self.widget.configure(command=command)
 
 class ValueWrapper(BaseWrapper):
-    """Wrapper for components with get/set text value (Entry, Text)."""
     def __init__(self, widget, layout_info, hint_text="", hint_color="grey"):
         super().__init__(widget, layout_info)
         self.hint_text = hint_text
         self.hint_color = hint_color
 
     def text(self, new_text=None):
-        """Gets or sets the text of the widget."""
         if new_text is None:
-            # Getter
             if isinstance(self.widget, ctk.CTkEntry):
                 return self.widget.get()
             elif isinstance(self.widget, ctk.CTkTextbox):
@@ -77,19 +76,16 @@ class ValueWrapper(BaseWrapper):
                 return value
             return None
         else:
-            # Setter
             if isinstance(self.widget, ctk.CTkEntry):
                 self.widget.delete(0, "end")
                 self.widget.insert(0, new_text)
             elif isinstance(self.widget, ctk.CTkTextbox):
                 self.widget.delete("1.0", "end")
                 self.widget.insert("1.0", new_text)
-                # After setting text, ensure it's not using hint color
                 self.widget.configure(text_color=self.widget.cget("text_color")[0])
 
 
 class CheckWrapper(BaseWrapper):
-    """Wrapper for components with a checked state (Checkbox)."""
     def __init__(self, widget, layout_info, variable):
         super().__init__(widget, layout_info)
         self.variable = variable
@@ -101,7 +97,6 @@ class CheckWrapper(BaseWrapper):
         self.widget.configure(command=command)
 
 class ToggleWrapper(BaseWrapper):
-    """Wrapper for ToggleButton (Switch)."""
     def __init__(self, widget, layout_info, variable):
         super().__init__(widget, layout_info)
         self.variable = variable
@@ -113,7 +108,6 @@ class ToggleWrapper(BaseWrapper):
         self.widget.configure(command=command)
 
 class SliderWrapper(BaseWrapper):
-    """Wrapper for Sliders."""
     def get(self):
         return self.widget.get()
 
@@ -121,21 +115,18 @@ class SliderWrapper(BaseWrapper):
         self.widget.set(value)
 
 class ProgressWrapper(BaseWrapper):
-    """Wrapper for ProgressBars."""
     def __init__(self, widget, layout_info, progress_bar, label):
         super().__init__(widget, layout_info)
         self.progress_bar = progress_bar
         self.label = label
 
     def set(self, value):
-        """Sets the progress value (0-100)."""
         normalized_value = value / 100.0
         self.progress_bar.set(normalized_value)
         if self.label:
             self.label.configure(text=f"{int(value)}%")
 
 class SelectWrapper(BaseWrapper):
-    """Wrapper for Dropdown/OptionMenu."""
     def __init__(self, widget, layout_info, variable):
         super().__init__(widget, layout_info)
         self.variable = variable
@@ -144,11 +135,9 @@ class SelectWrapper(BaseWrapper):
         return self.variable.get()
 
     def on_select(self, command):
-        """Assigns a function to run when the selection changes."""
         self.widget.configure(command=command)
 
 class RadioGroupWrapper(BaseWrapper):
-    """Wrapper for RadioGroups."""
     def __init__(self, widget, layout_info, variable):
         super().__init__(widget, layout_info)
         self.variable = variable
@@ -176,8 +165,6 @@ class SpinnerWrapper(BaseWrapper):
         self.entry.delete(0, "end")
         self.entry.insert(0, str(value))
 
-# --- Core GUI Building Logic ---
-
 class NVLibParser:
     def __init__(self, master):
         self.master = master
@@ -186,7 +173,6 @@ class NVLibParser:
         self.radio_groups = {}
 
     def _process_image(self, img, radius, opacity):
-        """Helper function to apply corner radius and opacity to an image."""
         img = img.convert("RGBA")
 
         if opacity < 1.0:
@@ -265,10 +251,10 @@ class NVLibParser:
 
         if comp_type == 'Button':
             widget = ctk.CTkButton(parent, width=w, height=h, text=props.get('text'), 
-                                   text_color=props.get('textColor'),
-                                   fg_color=props.get('backgroundColor'),
-                                   font=custom_font,
-                                   corner_radius=props.get('cornerRadius', 8))
+                                     text_color=props.get('textColor'),
+                                     fg_color=props.get('backgroundColor'),
+                                     font=custom_font,
+                                     corner_radius=props.get('cornerRadius', 8))
         
         elif comp_type == 'Label':
             text = props.get('iconName') or props.get('text')
@@ -276,12 +262,12 @@ class NVLibParser:
 
         elif comp_type == 'TextBox':
             widget = ctk.CTkEntry(parent, width=w, height=h,
-                                  placeholder_text=props.get('hintText', ''),
-                                  placeholder_text_color=props.get('hintColor', 'grey'),
-                                  text_color=props.get('textColor'), 
-                                  fg_color=props.get('backgroundColor'), 
-                                  font=custom_font,
-                                  border_width=0)
+                                   placeholder_text=props.get('hintText', ''),
+                                   placeholder_text_color=props.get('hintColor', 'grey'),
+                                   text_color=props.get('textColor'), 
+                                   fg_color=props.get('backgroundColor'), 
+                                   font=custom_font,
+                                   border_width=0)
             
             initial_text = props.get('text', '')
             if initial_text:
@@ -289,8 +275,8 @@ class NVLibParser:
 
         elif comp_type == 'TextArea':
             widget = ctk.CTkTextbox(parent, width=w, height=h, text_color=props.get('textColor'), 
-                                    fg_color=props.get('backgroundColor'), font=custom_font,
-                                    corner_radius=props.get('cornerRadius', 8))
+                                      fg_color=props.get('backgroundColor'), font=custom_font,
+                                      corner_radius=props.get('cornerRadius', 8))
             
             hint_text = props.get('hintText', '')
             hint_color = props.get('hintColor', 'grey')
@@ -335,17 +321,17 @@ class NVLibParser:
 
         elif comp_type in ['CardView', 'Panel']:
             widget = ctk.CTkFrame(parent, width=w, height=h, fg_color=props.get('backgroundColor'),
-                                  corner_radius=props.get('cornerRadius', 8))
+                                   corner_radius=props.get('cornerRadius', 8))
         
         elif comp_type == 'Checkbox':
             variable = ctk.BooleanVar(value=props.get('checked', False))
             widget = ctk.CTkCheckBox(parent, width=w, height=h, text=props.get('text'), variable=variable, font=custom_font,
-                                     text_color=props.get('textColor'), fg_color=props.get('checkedColor'))
+                                       text_color=props.get('textColor'), fg_color=props.get('checkedColor'))
 
         elif comp_type == 'ToggleButton':
             variable = ctk.IntVar(value=1 if props.get('checked') else 0)
             widget = ctk.CTkSwitch(parent, width=w, height=h, text=props.get('text', ''), variable=variable, font=custom_font,
-                                   progress_color=props.get('onColor'), button_color=props.get('offColor'))
+                                     progress_color=props.get('onColor'), button_color=props.get('offColor'))
 
         elif comp_type == 'Slider':
             widget = ctk.CTkSlider(parent, width=w, height=h, from_=props.get('min',0), to=props.get('max',100),
@@ -372,10 +358,10 @@ class NVLibParser:
             options = props.get('options', '').split('\n')
             if not options: options = [""]
             widget = ctk.CTkOptionMenu(parent, width=w, height=h, variable=variable, values=options, font=custom_font,
-                                       text_color=props.get('textColor'), fg_color=props.get('backgroundColor'),
-                                       dropdown_fg_color=props.get('backgroundColor'),
-                                       dropdown_text_color=props.get('textColor'),
-                                       dropdown_hover_color=props.get('selectionColor'))
+                                         text_color=props.get('textColor'), fg_color=props.get('backgroundColor'),
+                                         dropdown_fg_color=props.get('backgroundColor'),
+                                         dropdown_text_color=props.get('textColor'),
+                                         dropdown_hover_color=props.get('selectionColor'))
         
         elif comp_type == 'RadioGroup':
             variable = ctk.StringVar(value=props.get('checkedValue'))
@@ -470,8 +456,10 @@ class AutoGUI(ctk.CTk):
         for widget in self.winfo_children():
             widget.destroy()
         
+        resolved_layout_path = resource_path(file_path)
+
         parser = NVLibParser(self)
-        self.widgets = parser.build_from_json(file_path)
+        self.widgets = parser.build_from_json(resolved_layout_path)
         if self.widgets is None:
             self.widgets = {}
 
@@ -482,9 +470,9 @@ class AutoGUI(ctk.CTk):
         self.configure(fg_color=color)
         
     def set_icon(self, image_path):
-        """Sets the icon of the main window."""
         try:
-            image = Image.open(image_path)
+            resolved_icon_path = resource_path(image_path)
+            image = Image.open(resolved_icon_path)
             self._icon = ImageTk.PhotoImage(image)
             self.wm_iconphoto(False, self._icon)
         except Exception as e:
@@ -494,7 +482,7 @@ class AutoGUI(ctk.CTk):
         file_path = filedialog.askopenfilename(
             title="Select New GUI Layout File",
             filetypes=(("JSON files", "*.json"), ("All files", "*.*"))
-        )
+        ) 
         if file_path:
             self.build_gui(file_path)
 

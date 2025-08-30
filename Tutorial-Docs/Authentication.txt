@@ -1,0 +1,82 @@
+from NVLib.Components.Authentication.FirebaseAuth import Auth
+
+if __name__ == "__main__":
+    firebase = Auth(r"TestData\FirebaseAdminServiceAccountPrivateKey.json")
+
+    while True:
+        print("\nChoose an action:")
+        print("1. Create user (email)")
+        print("2. Get user by email")
+        print("3. Get UID by email")
+        print("4. Get email by UID")
+        print("5. Get phone by email")
+        print("6. Get profile picture by email")
+        print("7. Update user (by email)")
+        print("8. Reset password by email")
+        print("9. Disable account by email")
+        print("10. Delete user by email")
+        print("11. List users")
+        print("0. Exit")
+
+        choice = input("Enter choice: ").strip()
+
+        if choice == "1":
+            email = input("Email: ")
+            password = input("Password: ")
+            name = input("Display name (optional): ") or None
+            firebase.create_user(email, password, name)
+
+        elif choice == "2":
+            email = input("Email: ")
+            print(firebase.get_user_by_email(email))
+
+        elif choice == "3":
+            email = input("Email: ")
+            print(firebase.get_uid_by_email(email))
+
+        elif choice == "4":
+            uid = input("UID: ")
+            print(firebase.get_email_by_uid(uid))
+
+        elif choice == "5":
+            email = input("Email: ")
+            print(firebase.get_phone_by_email(email))
+
+        elif choice == "6":
+            email = input("Email: ")
+            print(firebase.get_profile_picture_by_email(email))
+
+        elif choice == "7":
+            email = input("Email: ")
+            uid = firebase.get_uid_by_email(email)
+            if uid:
+                new_email = input("New email (or leave blank): ") or None
+                password = input("New password (or leave blank): ") or None
+                name = input("New display name (or leave blank): ") or None
+                phone = input("New phone number (or leave blank): ") or None
+                photo = input("New photo URL (or leave blank): ") or None
+                firebase.update_user(uid, email=new_email, password=password, display_name=name, phone_number=phone, photo_url=photo)
+            else:
+                print("User not found.")
+
+        elif choice == "8":
+            email = input("Email: ")
+            new_password = input("New password: ")
+            firebase.reset_password_by_email(email, new_password)
+
+        elif choice == "9":
+            email = input("Email: ")
+            firebase.disable_account_by_email(email)
+
+        elif choice == "10":
+            email = input("Email: ")
+            firebase.delete_user_by_email(email)
+
+        elif choice == "11":
+            print(firebase.list_users())
+
+        elif choice == "0":
+            break
+
+        else:
+            print("Invalid choice. Try again.")

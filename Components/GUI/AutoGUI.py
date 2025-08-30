@@ -7,6 +7,7 @@ import io
 import os
 import sys
 import atexit
+import tempfile
 
 def resource_path(relative_path):
     try:
@@ -511,6 +512,13 @@ class NVLibParser:
                 print(f"Created Component: '{comp_id}' of type '{comp_type}'")
 
 class AutoGUI(ctk.CTk):
+    def _resolve_path(self, path):
+        try:
+            base_path = sys._MEIPASS  # PyInstaller temp folder
+        except AttributeError:
+            base_path = os.path.abspath(".")
+        return os.path.join(base_path, path)
+
     def __init__(self):
         super().__init__()
         self.widgets = {}
@@ -568,9 +576,9 @@ class AutoGUI(ctk.CTk):
     def build_gui(self, file_path):
         for widget in self.winfo_children():
             widget.destroy()
-        
+        resolved_path = self._resolve_path(file_path)
         parser = NVLibParser(self, debug=self.debug)
-        self.widgets = parser.build_from_json(file_path)
+        self.widgets = parser.build_from_json(resolved_path)
         if self.widgets is None:
             self.widgets = {}
         
@@ -593,26 +601,17 @@ class AutoGUI(ctk.CTk):
             print(f"Error loading icon font: {e}")
 
     def set_icon(self, image_path):
-        ico_path = image_path
-        temp_file_created = False
-        
+        resolved_path = self._resolve_path(image_path)
         try:
-            # If not an ICO, convert it
-            if not image_path.lower().endswith('.ico'):
-                image = Image.open(image_path)
-                ico_path = 'temp_icon.ico'
-                image.save(ico_path, format='ICO', sizes=[(32,32)])
-                temp_file_created = True
-
+            img = Image.open(resolved_path)
+            img = img.resize((32, 32), Image.Resampling.LANCZOS)
+            temp_dir = tempfile.gettempdir()
+            ico_path = os.path.join(temp_dir, f"autogui_icon_{os.getpid()}.ico")
+            img.save(ico_path, format='ICO', sizes=[(32,32)])
             self.iconbitmap(ico_path)
-
-            if temp_file_created:
-                # Schedule the temporary file to be deleted when the program exits
-                atexit.register(os.remove, ico_path)
-
+            atexit.register(lambda: os.path.exists(ico_path) and os.remove(ico_path))
         except Exception as e:
-            print(f"Error setting icon: {e}. Make sure it's a valid image file and Pillow is installed.")
-
+            print(f"Failed to set icon: {e}")
 
     def load_new_gui(self):
         file_path = filedialog.askopenfilename(

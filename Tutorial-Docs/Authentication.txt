@@ -1,6 +1,7 @@
 from NVLib.Components.Authentication.FirebaseAuth import Auth
 
 if __name__ == "__main__":
+    # Initialize Firebase Auth with relative path to your service account JSON
     firebase = Auth(r"TestData\FirebaseAdminServiceAccountPrivateKey.json")
 
     while True:
@@ -21,59 +22,90 @@ if __name__ == "__main__":
         choice = input("Enter choice: ").strip()
 
         if choice == "1":
+            # Create a new user
             email = input("Email: ")
             password = input("Password: ")
             name = input("Display name (optional): ") or None
-            firebase.create_user(email, password, name)
+            phone = input("Phone number (optional, E.164 format): ") or None
+            photo = input("Profile photo URL (optional): ") or None
+            uid = firebase.create_user(email, password, name, phone_number=phone, photo_url=photo)
+            if uid:
+                print(f"User created successfully with UID: {uid}")
+            else:
+                print("Failed to create user.")
 
         elif choice == "2":
+            # Get full user details by email
             email = input("Email: ")
-            print(firebase.get_user_by_email(email))
+            user = firebase.get_user_by_email(email)
+            if user:
+                print(user.__dict__)
+            else:
+                print("User not found.")
 
         elif choice == "3":
+            # Get UID from email
             email = input("Email: ")
-            print(firebase.get_uid_by_email(email))
+            uid = firebase.get_uid_by_email(email)
+            print(f"UID: {uid}" if uid else "User not found.")
 
         elif choice == "4":
+            # Get email from UID
             uid = input("UID: ")
-            print(firebase.get_email_by_uid(uid))
+            email = firebase.get_email_by_uid(uid)
+            print(f"Email: {email}" if email else "User not found.")
 
         elif choice == "5":
+            # Get phone number by email
             email = input("Email: ")
-            print(firebase.get_phone_by_email(email))
+            phone = firebase.get_phone_by_email(email)
+            print(f"Phone: {phone}" if phone else "Phone number not set or user not found.")
 
         elif choice == "6":
+            # Get profile picture URL by email
             email = input("Email: ")
-            print(firebase.get_profile_picture_by_email(email))
+            photo = firebase.get_profile_picture_by_email(email)
+            print(f"Profile photo URL: {photo}" if photo else "Photo not set or user not found.")
 
         elif choice == "7":
+            # Update user details by email
             email = input("Email: ")
             uid = firebase.get_uid_by_email(email)
             if uid:
                 new_email = input("New email (or leave blank): ") or None
                 password = input("New password (or leave blank): ") or None
                 name = input("New display name (or leave blank): ") or None
-                phone = input("New phone number (or leave blank): ") or None
+                phone = input("New phone number (or leave blank, E.164): ") or None
                 photo = input("New photo URL (or leave blank): ") or None
                 firebase.update_user(uid, email=new_email, password=password, display_name=name, phone_number=phone, photo_url=photo)
+                print("User updated successfully.")
             else:
                 print("User not found.")
 
         elif choice == "8":
+            # Reset password by email
             email = input("Email: ")
             new_password = input("New password: ")
             firebase.reset_password_by_email(email, new_password)
+            print("Password reset successfully.")
 
         elif choice == "9":
+            # Disable account by email
             email = input("Email: ")
             firebase.disable_account_by_email(email)
+            print("Account disabled successfully.")
 
         elif choice == "10":
+            # Delete user by email
             email = input("Email: ")
             firebase.delete_user_by_email(email)
+            print("User deleted successfully.")
 
         elif choice == "11":
-            print(firebase.list_users())
+            # List all users (up to 1000 by default)
+            users = firebase.list_users()
+            for u in users:
+                print(u)
 
         elif choice == "0":
             break

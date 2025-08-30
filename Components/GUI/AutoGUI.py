@@ -428,11 +428,21 @@ class NVLibParser:
             variable = ctk.StringVar(value=props.get('text'))
             options = props.get('options', '').split('\n')
             if not options: options = [""]
+            size = [props.get('width', 120), props.get('height', 30)]
+            bg_color = props.get('backgroundColor')
+            text_color = props.get('textColor')
+            hover_color = props.get('selectionColor')
             widget = ctk.CTkOptionMenu(container, variable=variable, values=options, font=custom_font,
+                                       width=max(120, size[0]),
+                                       height=max(30, size[1]),
                                        text_color=props.get('textColor'), fg_color=props.get('backgroundColor'),
-                                       dropdown_fg_color=props.get('backgroundColor'),
-                                       dropdown_text_color=props.get('textColor'),
-                                       dropdown_hover_color=props.get('selectionColor'))
+                                       button_color=bg_color,
+                                       button_hover_color=bg_color,
+                                       dropdown_fg_color=bg_color,
+                                       dropdown_text_color=text_color,
+                                       dropdown_hover_color=hover_color,
+                                       corner_radius=12)
+
         
         elif comp_type == 'RadioGroup':
             variable = ctk.StringVar(value=props.get('checkedValue'))

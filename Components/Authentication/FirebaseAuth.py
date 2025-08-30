@@ -28,13 +28,9 @@ class Auth:
             self.auth = None
 
     def create_user(self, email, password, display_name=None, phone_number=None, photo_url=None):
-        return self.auth.create_user(
-            email=email,
-            password=password,
-            display_name=display_name,
-            phone_number=phone_number,
-            photo_url=photo_url
-        )
+        user = self.auth.create_user(email=email,password=password,display_name=display_name,phone_number=phone_number,photo_url=photo_url)
+        return user.uid  # return UID string
+
 
     def get_user_by_email(self, email):
         return self.auth.get_user_by_email(email)

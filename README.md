@@ -1,4 +1,4 @@
-# ****Python 3.10.10 Version ONLY (Updating Next Week)****
+# ****Python 3.10.10 Version ONLY (Updating on Oct 25)****
 
 # NVLib
 

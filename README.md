@@ -1,4 +1,4 @@
-# ****Python 3.10.10 Version ONLY (Updating on Oct 25)****
+# ****Python 3.12.10 Version ONLY****
 
 # NVLib
 
@@ -41,3 +41,4 @@ Now, you’re ready to use NVLib in your VS Code project! 🚀
 For more details, visit the [NVLib GitHub Repository](https://github.com/saineela/NVLib).
 
 ## Example Code & Tutorial: [NVLib Tutorial](https://github.com/saineela/NVLib/tree/python/Tutorial-Docs)
+## Install Using: [Pypi Package]([https://github.com/saineela/NVLib/tree/python/Tutorial-Docs](https://pypi.org/project/nvlib-sn/))
